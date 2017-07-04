@@ -58,7 +58,7 @@ describe('API', () => {
   describe('GET /search', () => {
     it('it should return success', (done) => {
       chai.request(server)
-        .get('/api/search/QF?date=2018-09-02&from=SYD&to=JFK')
+        .get('/api/search?date=2018-09-02&from=SYD&to=JFK')
         .end((err, res) => {
           res.should.have.status(200)
           res.body.should.be.a('array')
@@ -67,11 +67,11 @@ describe('API', () => {
           })
           done()
         })
-    })
+    }).timeout(30000)
 
     it('it should fail if query is missing', (done) => {
       chai.request(server)
-        .get('/api/search/QF')
+        .get('/api/search')
         .end((err, res) => {
           res.should.have.status(400)
           done()
@@ -80,7 +80,7 @@ describe('API', () => {
 
     it('it should fail if date is missing', (done) => {
       chai.request(server)
-        .get('/api/search/QF?from=SYD&to=JFK')
+        .get('/api/search?from=SYD&to=JFK')
         .end((err, res) => {
           res.should.have.status(400)
           done()
@@ -89,7 +89,7 @@ describe('API', () => {
 
     it('it should fail if from is missing', (done) => {
       chai.request(server)
-        .get('/api/search/QF?date=2018-09-02&to=JFK')
+        .get('/api/search?date=2018-09-02&to=JFK')
         .end((err, res) => {
           res.should.have.status(400)
           done()
@@ -98,7 +98,7 @@ describe('API', () => {
 
     it('it should fail if to is missing', (done) => {
       chai.request(server)
-        .get('/api/search/QF?date=2018-09-02from=SYD')
+        .get('/api/search?date=2018-09-02from=SYD')
         .end((err, res) => {
           res.should.have.status(400)
           done()

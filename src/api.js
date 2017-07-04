@@ -1,11 +1,11 @@
 let express = require('express')
 let router = express.Router()
+let dataService = require('./data')
 
 router.get('/airlines', (req, res) => {
-  res.json([{
-    "code": "SQ",
-    "name": "Singapore Airlines"
-  }])
+  dataService
+    .getAirlines()
+    .then(results => res.json(results))
 })
 
 router.get('/airports', (req, res) => {
@@ -13,33 +13,42 @@ router.get('/airports', (req, res) => {
   if (query === undefined || query.length < 2)
     return res.status(400).send('query must contain at least two letters');
 
-  res.json([
-    {
-      "airportCode": "MEL",
-      "airportName": "Tullamarine Arpt",
-      "cityName": "Melbourne",
-      "countryName": "Australia"
-    }
-  ])
+  dataService
+    .getAirports(query)
+    .then(results => results)
+    .map(airport => {
+      let { airportCode, airportName, cityName, countryName } = airport;
+      return { airportCode, airportName, cityName, countryName }
+    })
+    .then(data => res.json(data))
 })
 
-router.get('/search/:code', (req, res) => {
-  let code = req.params.code
+router.get('/search', (req, res) => {
   let {date, from, to} = req.query
 
   if (date === undefined || from === undefined || to === undefined)
     return res.status(400).send('date, from & to are required');
 
-  res.json([
-    {
-      "depart": "2018-09-02T13:33:00+10:00",
-      "arrive": "2018-09-02T19:34:00-04:00",
-      "flight": "QF798",
-      "distance": 16014,
-      "durationMin": 1201,
-      "price": 1859.01
-    }
-  ])
+  dataService
+    .getAirlines()
+    .then(airlines => airlines) 
+    // load flights for each airline
+    .map(airline => dataService.getFlights(airline.code, date, from, to))
+    // process request in parallel
+    .all(data => data)
+    // flatten object
+    .reduce((prev, cur) => prev.concat(cur), [])
+    // format response
+    .map(item => ({
+      flight: item.airline.code + item.flightNum,
+      depart: item.start.dateTime,
+      arrive: item.finish.dateTime,
+      distance: item.distance,
+      durationMin: item.durationMin,
+      price: item.price
+    }))
+    .then(data => res.json(data))
+    
 })
 
 module.exports = router
