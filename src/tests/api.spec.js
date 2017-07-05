@@ -30,7 +30,7 @@ describe('API', () => {
           res.should.have.status(200)
           res.body.should.be.a('array')
           res.body.map((item) => {
-            item.should.have.all.keys(['airportCode', 'airportName', 'cityName', 'countryName'])
+            item.should.have.all.keys(['id', 'name', 'city', 'country'])
           })
           done()
         })
@@ -63,7 +63,7 @@ describe('API', () => {
           res.should.have.status(200)
           res.body.should.be.a('array')
           res.body.map((item) => {
-            item.should.have.all.keys(['depart', 'arrive', 'flight', 'distance', 'durationMin', 'price'])
+            item.should.have.all.keys(['airline', 'depart', 'arrive', 'flight', 'distance', 'durationMin', 'price'])
           })
           done()
         })

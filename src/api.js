@@ -6,6 +6,7 @@ router.get('/airlines', (req, res) => {
   dataService
     .getAirlines()
     .then(results => res.json(results))
+    .catch(e => res.status(400).json({ success: false, message: e.message}))
 })
 
 router.get('/airports', (req, res) => {
@@ -18,9 +19,15 @@ router.get('/airports', (req, res) => {
     .then(results => results)
     .map(airport => {
       let { airportCode, airportName, cityName, countryName } = airport;
-      return { airportCode, airportName, cityName, countryName }
+      return { 
+        id: airportCode, 
+        name: airportName, 
+        city: cityName, 
+        country: countryName 
+      }
     })
     .then(data => res.json(data))
+    .catch(e => res.status(400).json({ success: false, message: e.message}))
 })
 
 router.get('/search', (req, res) => {
@@ -40,6 +47,7 @@ router.get('/search', (req, res) => {
     .reduce((prev, cur) => prev.concat(cur), [])
     // format response
     .map(item => ({
+      airline: item.airline.name,
       flight: item.airline.code + item.flightNum,
       depart: item.start.dateTime,
       arrive: item.finish.dateTime,
@@ -48,6 +56,7 @@ router.get('/search', (req, res) => {
       price: item.price
     }))
     .then(data => res.json(data))
+    .catch(e => res.status(400).json({ success: false, message: e.message}))
     
 })
 
