@@ -1,3 +1,11 @@
+/**
+ * Build flight search form for provided inputs
+ * @param {*} $fromInput - from input 
+ * @param {*} $toInput - to input 
+ * @param {*} $dateInput - date input 
+ * @param {*} $searchBtn - search button 
+ * @param {*} $resultList - container for search results 
+ */
 function createFilghtSearchForm($fromInput, $toInput, $dateInput, $searchBtn, $resultList) {
     $fromInput = createAirportSearch($fromInput);
     $toInput = createAirportSearch($toInput);
@@ -5,6 +13,14 @@ function createFilghtSearchForm($fromInput, $toInput, $dateInput, $searchBtn, $r
     registerSubmitButton($searchBtn, $fromInput, $toInput, $dateInput, $resultList);
 }
 
+/**
+ * Handle click event for search button 
+ * @param {*} $searchBtn - search button 
+ * @param {*} $fromInput - from input 
+ * @param {*} $toInput - to input 
+ * @param {*} $dateInput - date input 
+ * @param {*} $resultList - container for search results 
+ */
 function registerSubmitButton ($searchBtn, $fromInput, $toInput, $dateInput, $resultList) {
     $searchBtn.click(function () {
         $resultList.empty();
@@ -38,6 +54,10 @@ function registerSubmitButton ($searchBtn, $fromInput, $toInput, $dateInput, $re
     });
 }
 
+/**
+ * Create date picker for supplied input
+ * @param {*} $input - date input 
+ */
 function createDatePicker ($input) {
     return $input.daterangepicker({
         "singleDatePicker": true,
@@ -47,6 +67,10 @@ function createDatePicker ($input) {
     });
 }
 
+/**
+ * Create autocomplete airport search supplied input
+ * @param {*} $input - airport select 
+ */
 function createAirportSearch ($input) {
     return $input.select2({
         theme: 'bootstrap',
@@ -69,6 +93,10 @@ function createAirportSearch ($input) {
     });
 }
 
+/**
+ * Create UI element for search results item
+ * @param {*} data - flight object 
+ */
 function formatFlight (data) {
     var depart = moment(data.depart).format('DD/MM/YYYY, h:mma');
     var arrive = moment(data.arrive).format('DD/MM/YYYY, h:mma');
@@ -81,6 +109,10 @@ function formatFlight (data) {
     '</li>';
 }
 
+/**
+ * Create UI element for airport item
+ * @param {*} data - airport object 
+ */
 function formatAirport (airport) {
     if (airport.loading) return airport.text;
     return "<div class='clearfix'>" +
@@ -90,6 +122,10 @@ function formatAirport (airport) {
     ;
 }
 
+/**
+ * Create UI presentation for selected airport 
+ * @param {*} data - airport object 
+ */
 function formatAirportSelection (airport) {
     if (!airport.id)
         return airport.text;

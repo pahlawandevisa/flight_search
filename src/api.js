@@ -2,6 +2,9 @@ let express = require('express')
 let router = express.Router()
 let dataService = require('./data')
 
+/**
+ * GET /airlines
+ */
 router.get('/airlines', (req, res) => {
   dataService
     .getAirlines()
@@ -9,6 +12,10 @@ router.get('/airlines', (req, res) => {
     .catch(e => res.status(400).json({ success: false, message: e.message}))
 })
 
+
+/**
+ * GET /airports
+ */
 router.get('/airports', (req, res) => {
   let query = req.query.q
   if (query === undefined || query.length < 2)
@@ -30,6 +37,10 @@ router.get('/airports', (req, res) => {
     .catch(e => res.status(400).json({ success: false, message: e.message}))
 })
 
+
+/**
+ * GET /search
+ */
 router.get('/search', (req, res) => {
   let {date, from, to} = req.query
 
